@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Kursus Mobil</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #262626;
+      margin: 0;
+      padding: 0;
+      color: rgb(255, 209, 91);
+      overflow-x: hidden;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      background-color: #1f1f1f;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      justify-content: space-around;
+    }
+
+    .header img {
+      width: 100px;
+      height: auto;
+    }
+
+    .header h2 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    @media (min-width: 600px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+    .background-logo {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      opacity: 0.50;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      margin-bottom: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .catalog-card {
+      background-color: #838383;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-align: center;
+    }
+
+    .catalog-card:hover {
+      transform: scale(1.03);
+      background-color: #adadad;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-green {
+      background-color: #16a34a;
+      margin-top: 1rem;
+    }
+
+    #buktiTransfer {
+      display: none;
+    }
+
+    #formSection {
+      display: none;
+      margin-top: 2rem;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 10;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-content button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background-color: #ef4444;
+      color: white;
+      margin-right: 10px;
+    }
+
+    .btn-confirm {
+      background-color: #16a34a;
+      color: white;
+    }
+
+    .footer-clean {
+    background-color:#fff;
+    color:#4b4c4d;
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-clean .item.social {
+    text-align:right;
+  }
+
+  @media (max-width: 768px) {
+    .footer-clean .item.social {
+      text-align:center;
+    }
+  }
+
+  .footer-clean .item.social > a {
+    font-size:24px;
+    width:40px;
+    height:40px;
+    line-height:40px;
+    display:inline-block;
+    text-align:center;
+    border-radius:50%;
+    border:1px solid #ccc;
+    margin-left:10px;
+    margin-top:22px;
+    color:inherit;
+    opacity:0.75;
+  }
+
+  .footer-clean .item.social > a:hover {
+    opacity:0.9;
+  }
+
+  @media (max-width:991px) {
+    .footer-clean .item.social > a {
+      margin-top:40px;
+    }
+  }
+
+  @media (max-width:767px) {
+    .footer-clean .item.social > a {
+      margin-top:10px;
+    }
+  }
+
+  .footer-clean .copyright {
+    margin-top:14px;
+    margin-bottom:0;
+    font-size:13px;
+    opacity:0.6;
+    text-align: center;
+  }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="header">
+    <h2>Booking Sekarang !!</h2>
+    <img src="./asset/logo.png" alt="logo"/>
+  </div>
+  <img src="./asset/logo.png" alt="Logo" class="background-logo" />
+
+  <div class="container">
+    <h2>Pilih Paket Harga</h2>
+    <div class="grid">
+      <div class="catalog-card" onclick="showPaketModal('Paket A - Rp 1.000.000')">Paket A<br>Rp 1.000.000 - 5x Pertemuan</div>
+      <div class="catalog-card" onclick="showPaketModal('Paket B - Rp 1.800.000')">Paket B<br>Rp 1.800.000 - 10x Pertemuan</div>
+      <div class="catalog-card" onclick="showPaketModal('Paket C - Rp 2.500.000')">Paket C<br>Rp 2.500.000 - 15x Pertemuan</div>
+    </div>
+
+    <h2 style="margin-top: 2rem;">Pilih Jenis Mobil</h2>
+    <div class="grid">
+      <div class="catalog-card" onclick="showMobilModal('Toyota Avanza')">
+        <img src="./asset/avanza.png" alt="Avatar" style="width:100%">
+        <span>Toyota Avanza</span>
+      </div>
+      <div class="catalog-card" onclick="showMobilModal('Daihatsu Xenia')">
+        <img src="./asset/xenia.png" alt="Avatar" style="width:100%">
+        <span>Daihatsu Xenia</span>
+      </div>
+      <div class="catalog-card" onclick="showMobilModal('Honda Brio')">
+        <img src="./asset/brio.png" alt="Avatar" style="width:100%">
+        <span>Honda Brio</span>
+      </div>
+    </div>
+
+    <div id="formSection">
+      <h2 style="margin-top: 2rem;">Formulir Pendaftaran</h2>
+      <form id="formBooking">
+        <input type="text" id="nama" placeholder="Nama Lengkap" required />
+        <input type="text" id="alamat" placeholder="Alamat" required />
+        <input type="text" id="hp" placeholder="No HP" required />
+        <select id="wilayah" required>
+          <option value="">-- Pilih Wilayah Latihan --</option>
+          <option value="Jakarta">Jakarta</option>
+          <option value="Bandung">Bandung</option>
+          <option value="Yogyakarta">Yogyakarta</option>
+        </select>
+        <input type="date" id="tanggal" required />
+        <select id="pembayaran" onchange="toggleTransferInput()" required>
+          <option value="">-- Metode Pembayaran --</option>
+          <option value="Transfer">Transfer</option>
+          <option value="Cash">Cash</option>
+        </select>
+        <input type="file" id="buktiTransfer" accept="image/*" />
+        <button type="button" onclick="showModal('modalKonfirmasi')">Kirim ke Admin</button>
+      </form>
+      <button class="btn-green" id="btnCetak" onclick="cetakSertifikat()" style="display: none;">Download Sertifikat</button>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Paket -->
+  <div id="modalPaket" class="modal">
+    <div class="modal-content">
+      <p id="textPaket"></p>
+      <button class="btn-cancel" onclick="tutupModal('modalPaket')">Batal</button>
+      <button class="btn-confirm" onclick="konfirmasiPaket()">Pilih</button>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Mobil -->
+  <div id="modalMobil" class="modal">
+    <div class="modal-content">
+      <p id="textMobil"></p>
+      <button class="btn-cancel" onclick="tutupModal('modalMobil')">Batal</button>
+      <button class="btn-confirm" onclick="konfirmasiMobil()">Pilih</button>
+    </div>
+  </div>
+
+  <!-- Modal Kirim Data -->
+  <div id="modalKonfirmasi" class="modal">
+    <div class="modal-content">
+      <p>Apakah Anda yakin ingin mengirim data ke admin?</p>
+      <button class="btn-cancel" onclick="tutupModal('modalKonfirmasi')">Batal</button>
+      <button class="btn-confirm" onclick="konfirmasiKirim()">Konfirmasi</button>
+    </div>
+  </div>
+
+  <!-- Modal Sukses -->
+  <div id="modalSukses" class="modal">
+    <div class="modal-content">
+      <p>✅ Booking berhasil. Admin akan segera menghubungi Anda melalui WhatsApp.</p>
+      <button class="btn-confirm" onclick="tutupModal('modalSukses')">Tutup</button>
+    </div>
+  </div>
+  <div class="footer-clean">
+    <footer>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-3 item social"><a href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"/></svg>
+                </a><a href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M194.4 211.7a53.3 53.3 0 1 0 59.3 88.7 53.3 53.3 0 1 0 -59.3-88.7zm142.3-68.4c-5.2-5.2-11.5-9.3-18.4-12c-18.1-7.1-57.6-6.8-83.1-6.5c-4.1 0-7.9 .1-11.2 .1c-3.3 0-7.2 0-11.4-.1c-25.5-.3-64.8-.7-82.9 6.5c-6.9 2.7-13.1 6.8-18.4 12s-9.3 11.5-12 18.4c-7.1 18.1-6.7 57.7-6.5 83.2c0 4.1 .1 7.9 .1 11.1s0 7-.1 11.1c-.2 25.5-.6 65.1 6.5 83.2c2.7 6.9 6.8 13.1 12 18.4s11.5 9.3 18.4 12c18.1 7.1 57.6 6.8 83.1 6.5c4.1 0 7.9-.1 11.2-.1c3.3 0 7.2 0 11.4 .1c25.5 .3 64.8 .7 82.9-6.5c6.9-2.7 13.1-6.8 18.4-12s9.3-11.5 12-18.4c7.2-18 6.8-57.4 6.5-83c0-4.2-.1-8.1-.1-11.4s0-7.1 .1-11.4c.3-25.5 .7-64.9-6.5-83l0 0c-2.7-6.9-6.8-13.1-12-18.4zm-67.1 44.5A82 82 0 1 1 178.4 324.2a82 82 0 1 1 91.1-136.4zm29.2-1.3c-3.1-2.1-5.6-5.1-7.1-8.6s-1.8-7.3-1.1-11.1s2.6-7.1 5.2-9.8s6.1-4.5 9.8-5.2s7.6-.4 11.1 1.1s6.5 3.9 8.6 7s3.2 6.8 3.2 10.6c0 2.5-.5 5-1.4 7.3s-2.4 4.4-4.1 6.2s-3.9 3.2-6.2 4.2s-4.8 1.5-7.3 1.5l0 0c-3.8 0-7.5-1.1-10.6-3.2zM448 96c0-35.3-28.7-64-64-64H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96zM357 389c-18.7 18.7-41.4 24.6-67 25.9c-26.4 1.5-105.6 1.5-132 0c-25.6-1.3-48.3-7.2-67-25.9s-24.6-41.4-25.8-67c-1.5-26.4-1.5-105.6 0-132c1.3-25.6 7.1-48.3 25.8-67s41.5-24.6 67-25.8c26.4-1.5 105.6-1.5 132 0c25.6 1.3 48.3 7.1 67 25.8s24.6 41.4 25.8 67c1.5 26.3 1.5 105.4 0 131.9c-1.3 25.6-7.1 48.3-25.8 67z"/></svg>
+                </a><a href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M448 209.9a210.1 210.1 0 0 1 -122.8-39.3V349.4A162.6 162.6 0 1 1 185 188.3V278.2a74.6 74.6 0 1 0 52.2 71.2V0l88 0a121.2 121.2 0 0 0 1.9 22.2h0A122.2 122.2 0 0 0 381 102.4a121.4 121.4 0 0 0 67 20.1z"/></svg>
+                </a><a href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M92.1 254.6c0 24.9 7 49.2 20.2 70.1l3.1 5-13.3 48.6L152 365.2l4.8 2.9c20.2 12 43.4 18.4 67.1 18.4h.1c72.6 0 133.3-59.1 133.3-131.8c0-35.2-15.2-68.3-40.1-93.2c-25-25-58-38.7-93.2-38.7c-72.7 0-131.8 59.1-131.9 131.8zM274.8 330c-12.6 1.9-22.4 .9-47.5-9.9c-36.8-15.9-61.8-51.5-66.9-58.7c-.4-.6-.7-.9-.8-1.1c-2-2.6-16.2-21.5-16.2-41c0-18.4 9-27.9 13.2-32.3c.3-.3 .5-.5 .7-.8c3.6-4 7.9-5 10.6-5c2.6 0 5.3 0 7.6 .1c.3 0 .5 0 .8 0c2.3 0 5.2 0 8.1 6.8c1.2 2.9 3 7.3 4.9 11.8c3.3 8 6.7 16.3 7.3 17.6c1 2 1.7 4.3 .3 6.9c-3.4 6.8-6.9 10.4-9.3 13c-3.1 3.2-4.5 4.7-2.3 8.6c15.3 26.3 30.6 35.4 53.9 47.1c4 2 6.3 1.7 8.6-1c2.3-2.6 9.9-11.6 12.5-15.5c2.6-4 5.3-3.3 8.9-2s23.1 10.9 27.1 12.9c.8 .4 1.5 .7 2.1 1c2.8 1.4 4.7 2.3 5.5 3.6c.9 1.9 .9 9.9-2.4 19.1c-3.3 9.3-19.1 17.7-26.7 18.8zM448 96c0-35.3-28.7-64-64-64H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96zM148.1 393.9L64 416l22.5-82.2c-13.9-24-21.2-51.3-21.2-79.3C65.4 167.1 136.5 96 223.9 96c42.4 0 82.2 16.5 112.2 46.5c29.9 30 47.9 69.8 47.9 112.2c0 87.4-72.7 158.5-160.1 158.5c-26.6 0-52.7-6.7-75.8-19.3z"/></svg>
+                </i></a>
+                    <p class="copyright">Created By LXDIGITALFACTORY © 2025</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script>
+    let selectedPaket = "";
+    let selectedMobil = "";
+    let tempPaket = "";
+    let tempMobil = "";
+
+    function showModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function tutupModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
+    }
+
+    function showPaketModal(paket) {
+      tempPaket = paket;
+      document.getElementById("textPaket").innerText = `Konfirmasi pilih ${paket}?`;
+      showModal('modalPaket');
+    }
+
+    function konfirmasiPaket() {
+      selectedPaket = tempPaket;
+      tutupModal('modalPaket');
+      checkShowForm();
+    }
+
+    function showMobilModal(mobil) {
+      tempMobil = mobil;
+      document.getElementById("textMobil").innerText = `Konfirmasi pilih ${mobil}?`;
+      showModal('modalMobil');
+    }
+
+    function konfirmasiMobil() {
+      selectedMobil = tempMobil;
+      tutupModal('modalMobil');
+      checkShowForm();
+    }
+
+    function checkShowForm() {
+      if (selectedPaket && selectedMobil) {
+        document.getElementById("formSection").style.display = "block";
+      }
+    }
+
+    function toggleTransferInput() {
+      const metode = document.getElementById('pembayaran').value;
+      document.getElementById('buktiTransfer').style.display = metode === 'Transfer' ? 'block' : 'none';
+    }
+
+    async function konfirmasiKirim() {
+      tutupModal('modalKonfirmasi');
+      const nama = document.getElementById("nama").value;
+      const alamat = document.getElementById("alamat").value;
+      const hp = document.getElementById("hp").value;
+      const wilayah = document.getElementById("wilayah").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const metode = document.getElementById("pembayaran").value;
+      const bukti = document.getElementById("buktiTransfer").files[0];
+
+      if (!nama || !alamat || !hp || !wilayah || !tanggal || !metode) {
+        alert("Lengkapi semua isian!");
+        return;
+      }
+
+      const token = '7593508065:AAHjnwmfLIBRy4vCyYz3DcBMvc_z3g0dsLA';
+      const chatId = 5562048470;
+
+      const pesan = `📝 Booking Kursus Mobil:\n\n` +
+        `👤 Nama: ${nama}\n` +
+        `🏠 Alamat: ${alamat}\n` +
+        `📞 No HP: ${hp}\n` +
+        `📍 Wilayah: ${wilayah}\n` +
+        `📅 Tanggal: ${tanggal}\n` +
+        `🚗 Paket: ${selectedPaket}\n` +
+        `🚘 Mobil: ${selectedMobil}\n` +
+        `💳 Pembayaran: ${metode}`;
+
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: pesan })
+      });
+
+      if (metode === "Transfer" && bukti) {
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        formData.append("photo", bukti);
+        await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+          method: "POST",
+          body: formData
+        });
+      }
+
+      showModal('modalSukses');
+      document.getElementById("btnCetak").style.display = "block";
+    }
+
+    function cetakSertifikat() {
+      const { jsPDF } = window.jspdf;
+      const nama = document.getElementById("nama").value;
+      const tanggal = new Date().toLocaleDateString();
+
+      const doc = new jsPDF({ orientation: "landscape" });
+      doc.setFontSize(22);
+      doc.text("SERTIFIKAT AKREDITASI", 80, 40);
+      doc.setFontSize(18);
+      doc.text(`Kepada: ${nama}`, 80, 60);
+      doc.setFontSize(14);
+      doc.text(`Atas partisipasi dalam kursus mengemudi Paket ${selectedPaket}`, 80, 80);
+      doc.text(`Dengan kendaraan: ${selectedMobil}`, 80, 95);
+      doc.text(`Tanggal Booking: ${tanggal}`, 80, 110);
+      doc.text("Telah menyelesaikan pelatihan dengan baik", 80, 125);
+      doc.setFontSize(12);
+      doc.text("Lembaga Kursus Mobil Profesional", 80, 140);
+      doc.save(`Sertifikat_${nama}.pdf`);
+    }
+  </script>
+</body>
+</html>
