@@ -262,7 +262,7 @@
           <option value="Cash">Cash</option>
         </select>
         <input type="file" id="buktiTransfer" accept="image/*" />
-        <button type="button" onclick="showModal('modalKonfirmasi')">Kirim ke Admin</button>
+        <button type="button" onclick="showModal('modalKonfirmasi')">Daftar Sekarang</button>
       </form>
       <button class="btn-green" id="btnCetak" onclick="cetakSertifikat()" style="display: none;">Download Sertifikat</button>
     </div>
@@ -289,9 +289,9 @@
   <!-- Modal Kirim Data -->
   <div id="modalKonfirmasi" class="modal">
     <div class="modal-content">
-      <p>Apakah Anda yakin ingin mengirim data ke admin?</p>
-      <button class="btn-cancel" onclick="tutupModal('modalKonfirmasi')">Batal</button>
-      <button class="btn-confirm" onclick="konfirmasiKirim()">Konfirmasi</button>
+      <p>Booking Sudah Sesuai?</p>
+      <button class="btn-cancel" onclick="tutupModal('modalKonfirmasi')">Cancel</button>
+      <button class="btn-confirm" onclick="konfirmasiKirim()">Submit</button>
     </div>
   </div>
 
@@ -341,7 +341,7 @@
 
     function showPaketModal(paket) {
       tempPaket = paket;
-      document.getElementById("textPaket").innerText = `Konfirmasi pilih ${paket}?`;
+      document.getElementById("textPaket").innerText = `${paket} telah dipilih, Lanjutkan untuk Memilih jenis Mobil`;
       showModal('modalPaket');
     }
 
@@ -353,7 +353,7 @@
 
     function showMobilModal(mobil) {
       tempMobil = mobil;
-      document.getElementById("textMobil").innerText = `Konfirmasi pilih ${mobil}?`;
+      document.getElementById("textMobil").innerText = ` Anda telah memilih jenis mobil${mobil}, Lanjutkan untuk mengisi data diri anda`;
       showModal('modalMobil');
     }
 
